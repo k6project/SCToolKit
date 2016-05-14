@@ -12,9 +12,11 @@ TARGET = TextureTool
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        MainWindow.cpp
+SOURCES +=\
+        MainWindow.cpp \
+    TextureTool.cpp
 
-HEADERS  += MainWindow.h
+HEADERS  += MainWindow.h \
+    TextureTool.h
 
 FORMS    += MainWindow.ui

@@ -1,22 +1,29 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 
-namespace Ui {
-class MainWindow;
+class TextureTool;
+
+namespace Ui
+{
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
 {
+
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+
+    MainWindow(TextureTool *_model, QWidget *_parent = 0);
+
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
-};
 
-#endif // MAINWINDOW_H
+    TextureTool *AppModel;
+
+    Ui::MainWindow *UI;
+
+};
