@@ -14,9 +14,17 @@ TEMPLATE = app
 
 SOURCES +=\
         MainWindow.cpp \
-    TextureTool.cpp
+    TextureTool.cpp \
+    ../../Shared/Platform/IO.cpp \
+    AddTextureDlg.cpp
 
 HEADERS  += MainWindow.h \
-    TextureTool.h
+    TextureTool.h \
+    ../../Shared/Platform/IntTypes.h \
+    ../../Shared/Platform/IO.h \
+    AddTextureDlg.h
 
-FORMS    += MainWindow.ui
+INCLUDEPATH += ../../Shared
+
+FORMS    += MainWindow.ui \
+    AddTextureDlg.ui
