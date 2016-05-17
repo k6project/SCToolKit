@@ -26,6 +26,7 @@ MainWindow::MainWindow(TextureTool *_model, QWidget *_parent)
     connect(UI->ActionSetCurrentProject, &QAction::triggered, this, &MainWindow::OnSetProjectDir);
     connect(UI->ActionImportImage, &QAction::triggered, this, &MainWindow::OnImportImage);
     connect(AppModel, &TextureTool::ImageImported, AddTexDialog, &AddTextureDlg::Show);
+    connect(AddTexDialog, &AddTextureDlg::accepted, AppModel, &TextureTool::SaveCurrentEntry);
     UI->ActionImportImage->setEnabled(false);
 }
 
@@ -50,6 +51,7 @@ void MainWindow::OnImportImage()
 
 void MainWindow::OnListEntriesUpdate()
 {
+    UI->ListWidget->clear();
     for (int i = 0; i < AppModel->GetNumTextureEntries(); i++)
     {
         UI->ListWidget->addItem(AppModel->GetTextureEntry(i).textureId);

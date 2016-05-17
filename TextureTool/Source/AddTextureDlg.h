@@ -1,6 +1,7 @@
 #pragma once
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
+#include <QtGui/QRegExpValidator>
 
 class TextureTool;
 
@@ -23,6 +24,8 @@ public:
 public slots:
 
     void Show();
+
+    void OnTextureIdChange(const QString &_id);
 
 private:
 

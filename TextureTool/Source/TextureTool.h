@@ -1,8 +1,12 @@
 #pragma once
 
+#include "Platform/IntTypes.h"
+
 #include <QtCore/QObject>
 #include <QtCore/QDir>
+#include <QtCore/QRegExp>
 #include <QtCore/QVector>
+#include <QtCore/QStringList>
 
 class QImage;
 
@@ -10,6 +14,7 @@ struct TextureEntry
 {
     QString textureId;
     QString texturePath;
+    uint32 Width, Height;
 };
 
 class TextureTool : public QObject
@@ -32,6 +37,12 @@ public:
 
     void ImportImageFile(const QString &_path);
 
+    bool HasTextureWithId(const QString &_id);
+
+    void SetCurrentEntryId(const QString &_id);
+
+    bool IsValidId(const QString &_id) const;
+
     void UpdateEntries();
 
 signals:
@@ -44,6 +55,8 @@ signals:
 
 public slots:
 
+    void SaveCurrentEntry();
+
 private:
 
     QVector<TextureEntry> TextureEntries;
@@ -51,6 +64,10 @@ private:
     TextureEntry *CurrentEntry = nullptr;
 
     QImage *CurrentImage = nullptr;
+
+    QStringList TextureIds;
+
+    QRegExp IdValidRegExp;
 
     QDir BaseDir;
 
