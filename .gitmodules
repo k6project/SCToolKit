@@ -1,0 +1,4 @@
+[submodule "Engine"]
+	path = Engine
+	url = git@bitbucket.org:private13/spinningcube.git
+	branch = master
