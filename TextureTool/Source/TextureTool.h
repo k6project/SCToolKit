@@ -14,7 +14,7 @@ struct TextureEntry
 {
     QString textureId;
     QString texturePath;
-    uint32 Width, Height;
+    uint32 Width, Height, Flags;
 };
 
 class TextureTool : public QObject
@@ -39,7 +39,9 @@ public:
 
     bool HasTextureWithId(const QString &_id);
 
-    void SetCurrentEntryId(const QString &_id);
+    void SetCurrentEntryByIndex(int _index);
+
+    void AssignCurrentEntryId(const QString &_id);
 
     bool IsValidId(const QString &_id) const;
 

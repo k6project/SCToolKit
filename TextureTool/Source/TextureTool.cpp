@@ -2,6 +2,8 @@
 #include "MainWindow.h"
 #include "Platform/IO.h"
 #include "Platform/IntTypes.h"
+#include "AssetUtils/AssetTypes.h"
+#include "AssetUtils/AssetLoader.h"
 
 #include <QtWidgets/QApplication>
 #include <QtCore/QDirIterator>
@@ -34,7 +36,7 @@ int TextureTool::GetNumTextureEntries() const
 
 const TextureEntry &TextureTool::GetTextureEntry(int _index) const
 {
-    static const TextureEntry invalid = { 0, 0, 0, 0 };
+    static const TextureEntry invalid = { 0, 0, 0, 0, 0 };
     if (_index >= 0 && _index < TextureEntries.size())
     {
         return TextureEntries[_index];
@@ -44,7 +46,7 @@ const TextureEntry &TextureTool::GetTextureEntry(int _index) const
 
 const TextureEntry &TextureTool::GetCurrentEntry() const
 {
-    static const TextureEntry invalid = { 0, 0, 0, 0 };
+    static const TextureEntry invalid = { 0, 0, 0, 0, 0 };
     if (CurrentEntry != nullptr)
     {
         return *CurrentEntry;
@@ -84,7 +86,17 @@ bool TextureTool::HasTextureWithId(const QString &_id)
     return TextureIds.contains(_id);
 }
 
-void TextureTool::SetCurrentEntryId(const QString &_id)
+void TextureTool::SetCurrentEntryByIndex(int _index)
+{
+    TextureAsset asset;
+    CurrentEntry = &TextureEntries[_index];
+    if (LoadAsset(CurrentEntry->texturePath.toLocal8Bit(), asset))
+    {
+        CurrentImage->loadFromData(asset.Buffer, asset.NumBytes, "PNG");
+    }
+}
+
+void TextureTool::AssignCurrentEntryId(const QString &_id)
 {
     CurrentEntry->textureId = _id;
 }
@@ -137,6 +149,7 @@ void TextureTool::SaveCurrentEntry()
     }
     header.append((const char *)&CurrentEntry->Width, 4);
     header.append((const char *)&CurrentEntry->Height, 4);
+    header.append((const char *)&CurrentEntry->Flags, 4);
     header.append((const char *)&pngSize, 4);
 
     outFile.setFileName(QString("%1.tex").arg(QString(texId)));
@@ -147,6 +160,9 @@ void TextureTool::SaveCurrentEntry()
         outFile.write(imgOut);
         outFile.close();
     }
+
+    delete CurrentEntry;
+    CurrentEntry = nullptr;
     UpdateEntries();
 }
 

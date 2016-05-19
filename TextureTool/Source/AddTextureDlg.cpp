@@ -58,7 +58,7 @@ void AddTextureDlg::OnTextureIdChange(const QString &_id)
         }
         else
         {
-            AppModel->SetCurrentEntryId(id);
+            AppModel->AssignCurrentEntryId(id);
         }
     }
     UI->TextureId->setStyleSheet((enable) ? "" : "color: #ff0000");
