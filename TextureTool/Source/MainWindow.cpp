@@ -27,6 +27,8 @@ MainWindow::MainWindow(TextureTool *_model, QWidget *_parent)
     connect(UI->ActionImportImage, &QAction::triggered, this, &MainWindow::OnImportImage);
     connect(AppModel, &TextureTool::ImageImported, AddTexDialog, &AddTextureDlg::Show);
     connect(AddTexDialog, &AddTextureDlg::accepted, AppModel, &TextureTool::SaveCurrentEntry);
+    connect(UI->ListWidget, &QListWidget::currentRowChanged, AppModel, &TextureTool::SetCurrentEntryByIndex);
+    connect(AppModel, &TextureTool::ImageLoaded, this, &MainWindow::OnImageLoaded);
     UI->ActionImportImage->setEnabled(false);
 }
 
@@ -59,9 +61,14 @@ void MainWindow::OnListEntriesUpdate()
     TexCountLabel->setText(QString("Textures in project: %1").arg(AppModel->GetNumTextureEntries()));
 }
 
+void MainWindow::OnImageLoaded()
+{
+    PreviewImage = AppModel->GetCurrentImage().scaled(UI->Preview->size(), Qt::KeepAspectRatio, Qt::FastTransformation);
+}
+
 void MainWindow::showEvent(QShowEvent *)
 {
     QString dir = "/Users/Eugen/Work/GLInfo";
-    AppModel->SetBaseDir(dir);
-    BaseDirLabel->setText(QString("Project folder: %1").arg(dir));
+    //AppModel->SetBaseDir(dir);
+    //BaseDirLabel->setText(QString("Project folder: %1").arg(dir));
 }

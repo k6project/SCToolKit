@@ -1,6 +1,7 @@
 #pragma once
 
-#include <QMainWindow>
+#include <QtGui/QImage>
+#include <QtWidgets/QMainWindow>
 
 class QLabel;
 class TextureTool;
@@ -30,6 +31,8 @@ public slots:
 
     void OnListEntriesUpdate();
 
+    void OnImageLoaded();
+
 protected:
 
     virtual void showEvent(QShowEvent *) override;
@@ -45,5 +48,7 @@ private:
     QLabel *TexCountLabel;
 
     QLabel *BaseDirLabel;
+
+    QImage PreviewImage;
 
 };

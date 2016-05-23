@@ -7,8 +7,7 @@
 #include <QtCore/QRegExp>
 #include <QtCore/QVector>
 #include <QtCore/QStringList>
-
-class QImage;
+#include <QtGui/QImage>
 
 struct TextureEntry
 {
@@ -29,6 +28,8 @@ public:
 
     int GetNumTextureEntries() const;
 
+    const QImage & GetCurrentImage() const;
+
     const TextureEntry & GetTextureEntry(int _index) const;
 
     const TextureEntry & GetCurrentEntry() const;
@@ -38,8 +39,6 @@ public:
     void ImportImageFile(const QString &_path);
 
     bool HasTextureWithId(const QString &_id);
-
-    void SetCurrentEntryByIndex(int _index);
 
     void AssignCurrentEntryId(const QString &_id);
 
@@ -55,7 +54,11 @@ signals:
 
     void ImageImported();
 
+    void ImageLoaded();
+
 public slots:
+
+    void SetCurrentEntryByIndex(int _index);
 
     void SaveCurrentEntry();
 
@@ -65,7 +68,7 @@ private:
 
     TextureEntry *CurrentEntry = nullptr;
 
-    QImage *CurrentImage = nullptr;
+    QImage CurrentImage;
 
     QStringList TextureIds;
 

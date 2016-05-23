@@ -37,7 +37,11 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QListWidget" name="ListWidget"/>
+        <widget class="QListWidget" name="ListWidget">
+         <property name="selectionRectVisible">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

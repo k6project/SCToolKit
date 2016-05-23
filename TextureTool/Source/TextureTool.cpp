@@ -19,10 +19,6 @@ TextureTool::TextureTool(QObject *parent)
 
 TextureTool::~TextureTool()
 {
-    if (CurrentImage != nullptr)
-    {
-        delete CurrentImage;
-    }
     if (CurrentEntry != nullptr && CurrentEntry->texturePath.isEmpty())
     {
         delete CurrentEntry;
@@ -32,6 +28,11 @@ TextureTool::~TextureTool()
 int TextureTool::GetNumTextureEntries() const
 {
     return TextureEntries.size();
+}
+
+const QImage &TextureTool::GetCurrentImage() const
+{
+    return CurrentImage;
 }
 
 const TextureEntry &TextureTool::GetTextureEntry(int _index) const
@@ -68,16 +69,27 @@ void TextureTool::SetBaseDir(const QString &_baseDirPath)
 
 void TextureTool::ImportImageFile(const QString &_path)
 {
+    QImage loadedImage;
     QFileInfo fileInfo(_path);
-    if (CurrentImage == nullptr)
+    loadedImage.load(_path);
+
+    switch (loadedImage.bitPlaneCount())
     {
-        CurrentImage = new QImage();
-    }
-    CurrentImage->load(_path);
+    case 1:
+    case 8:
+    case 16:
+    case 24:
+        CurrentImage = loadedImage.convertToFormat(QImage::Format_RGB888);
+        break;
+    case 32:
+        CurrentImage = loadedImage.convertToFormat(QImage::Format_ARGB32);
+        break;
+    };
+
     CurrentEntry = new TextureEntry();
     CurrentEntry->textureId = QString("TEX_%1").arg(fileInfo.baseName().toUpper().left(250));
-    CurrentEntry->Height = CurrentImage->height();
-    CurrentEntry->Width = CurrentImage->width();
+    CurrentEntry->Height = CurrentImage.height();
+    CurrentEntry->Width = CurrentImage.width();
     emit(ImageImported());
 }
 
@@ -89,10 +101,14 @@ bool TextureTool::HasTextureWithId(const QString &_id)
 void TextureTool::SetCurrentEntryByIndex(int _index)
 {
     TextureAsset asset;
-    CurrentEntry = &TextureEntries[_index];
-    if (LoadAsset(CurrentEntry->texturePath.toLocal8Bit(), asset))
+    if (_index >= 0 && _index < GetNumTextureEntries())
     {
-        CurrentImage->loadFromData(asset.Buffer, asset.NumBytes, "PNG");
+        CurrentEntry = &TextureEntries[_index];
+        if (LoadAsset(CurrentEntry->texturePath.toLocal8Bit(), asset))
+        {
+            CurrentImage.loadFromData(asset.Buffer, asset.NumBytes, "PNG");
+            emit(ImageLoaded());
+        }
     }
 }
 
@@ -115,7 +131,7 @@ void TextureTool::SaveCurrentEntry()
     QBuffer imgBuffer(&imgOut);
 
     imgBuffer.open(QIODevice::WriteOnly);
-    CurrentImage->save(&imgBuffer, "PNG");
+    CurrentImage.save(&imgBuffer, "PNG");
     pngSize = imgBuffer.size() & 0xFFFFFFFFu;
     imgBuffer.close();
 
